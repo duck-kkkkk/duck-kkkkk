@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 255 172" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    /* 浅色背景黑线，深色背景自动换成浅色线 */
+    svg { color: #1c1c1c }
+
+    @media (prefers-color-scheme: dark) {
+      svg { color: #ececec }
+    }
+
+    /*
+      8s 一轮：
+      头 → 眼睛 → 腮红 → 嘴和花茎 → 玫瑰 → 上色 → 闪光，停留后淡出
+    */
+    @keyframes d-head { 0%, 4% { stroke-dashoffset: 1.05 } 24%, 100% { stroke-dashoffset: 0 } }
+    @keyframes d-eye-l { 0%, 25% { stroke-dashoffset: 1.05 } 28%, 100% { stroke-dashoffset: 0 } }
+    @keyframes d-eye-r { 0%, 29% { stroke-dashoffset: 1.05 } 32%, 100% { stroke-dashoffset: 0 } }
+    @keyframes d-blush { 0%, 33% { stroke-dashoffset: 1.05 } 37%, 100% { stroke-dashoffset: 0 } }
+    @keyframes d-mouth { 0%, 37% { stroke-dashoffset: 1.05 } 45%, 100% { stroke-dashoffset: 0 } }
+    @keyframes d-rose { 0%, 45% { stroke-dashoffset: 1.05 } 56%, 100% { stroke-dashoffset: 0 } }
+
+    @keyframes rose-fill {
+      0%, 52% { opacity: 0 }
+      60%, 100% { opacity: 1 }
+    }
+
+    @keyframes spark {
+      0%, 58% { transform: scale(0) rotate(-25deg) }
+      63% { transform: scale(1.15) rotate(4deg) }
+      66%, 74% { transform: scale(1) rotate(0deg) }
+      77% { transform: scale(0.82) }
+      80%, 100% { transform: scale(1) }
+    }
+
+    /* 停留一会儿后整体淡出，再重画 */
+    @keyframes scene {
+      0%, 88% { opacity: 1 }
+      95%, 100% { opacity: 0 }
+    }
+
+    .scene { animation: scene 8s ease-in-out infinite }
+
+    .ink {
+      stroke-dasharray: 1 2;
+      stroke-dashoffset: 1.05;
+      animation-duration: 8s;
+      animation-iteration-count: infinite;
+      animation-timing-function: cubic-bezier(0.45, 0, 0.25, 1);
+    }
+
+    .head { animation-name: d-head }
+    .eye-l { animation-name: d-eye-l }
+    .eye-r { animation-name: d-eye-r }
+    .blush { animation-name: d-blush }
+    .mouth { animation-name: d-mouth }
+    .rose { animation-name: d-rose }
+
+    .rose-fill { opacity: 0; animation: rose-fill 8s ease-out infinite }
+
+    .spark {
+      transform-box: fill-box;
+      transform-origin: center;
+      transform: scale(0);
+      animation: spark 8s ease-out infinite;
+    }
+
+    .spark-2 { animation-delay: 0.15s }
+  </style>
+
+  <defs>
+    <radialGradient id="petal" cx="0.45" cy="0.45" r="0.6">
+      <stop offset="0" stop-color="#E58A8E" />
+      <stop offset="1" stop-color="#B0434D" />
+    </radialGradient>
+
+    <!-- 轻微抖动，让线条像蜡笔手绘 -->
+    <filter id="hand" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="7" />
+      <feDisplacementMap in="SourceGraphic" scale="1" />
+    </filter>
+  </defs>
+
+  <g class="scene" filter="url(#hand)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+    <!-- 头顶轮廓：左耳尖 → 头顶 → 右边圆耳，一笔画完 -->
+    <path class="ink head" pathLength="1" stroke-width="3.2" d="
+        M75,64 C90,45 114,22 135,11 C141,8 145,10 144,16
+        C141,28 136,40 130,51
+        C148,55 190,48 226,43 C236,41 244,45 243,53
+        C242,65 234,80 223,91" />
+
+    <!-- 眯眯眼 -->
+    <path class="ink eye-l" pathLength="1" stroke-width="4.4" d="M89,94 C93,99 96,104 99,109" />
+    <path class="ink eye-r" pathLength="1" stroke-width="4.4" d="M140,116 C147,114 155,112 162,111" />
+
+    <!-- 腮红短线 -->
+    <path class="ink blush" pathLength="1" stroke-width="2.3" d="
+        M77.5,116 L79,124 M84,117 L86,125
+        M171,134 L172.5,142 M178,133.5 L179.5,142 M185,133 L186.5,141.5" />
+
+    <!-- 花茎穿过 ω 嘴 -->
+    <path class="ink mouth" pathLength="1" stroke-width="2.8" d="
+        M60,131 C74,131 88,132 99,134
+        C101,143 111,144 114,137 C117,144 127,143 128,135
+        C140,138 152,149 162,159" />
+
+    <!-- 玫瑰：先上色，再描边 -->
+    <path class="rose-fill" stroke="none" fill="url(#petal)" d="
+        M24,118 C26,108 38,104 46,108 C50,103 60,104 60,112
+        C59,115 57,117 55,118 C62,122 62,134 56,140
+        C50,147 36,148 28,145 C20,142 17,134 21,128
+        C18,124 20,119 24,118 Z" />
+    <path class="ink rose" pathLength="1" stroke="#6E1F2A" stroke-width="2.9" d="
+        M24,118 C26,108 38,104 46,108 C50,103 60,104 60,112
+        C59,115 57,117 55,118 C62,122 62,134 56,140
+        C50,147 36,148 28,145 C20,142 17,134 21,128
+        C18,124 20,119 24,118
+        M49,114 L38,112 C33,113 31,118 31,124 L32,132
+        C36,137 45,137 50,133 L51,124 C49,119 42,119 39,123
+        L40,129 L45,128
+        M22,131 C27,139 40,142 52,136" />
+
+    <!-- 闪光 -->
+    <path class="spark" stroke-width="2.6" d="M28,34 Q31,52 45,56 Q33,61 41,78 Q30,64 15,60 Q28,54 28,34 Z" />
+    <path class="spark spark-2" stroke-width="2.4" d="M216,125 Q220,137 235,141 Q224,146 227.5,162 Q219,149 208.5,146 Q217,139 216,125 Z" />
+  </g>
+</svg>
